@@ -1,21 +1,20 @@
 import HomeSidebar from "../../component/sidebar/HomeSidebar";
 import Header from "../../component/header/Header";
+import MusicDiscovery from "../../component/card/card";
 
 export default function Home() {
     return (
-        <div className="min-h-screen bg-black flex flex-col">
-            {/* Header ở trên */}
+        <div className="flex flex-col h-screen w-full bg-black overflow-hidden">
             <Header />
 
-            {/* Body */}
-            <div className="flex flex-1">
-                {/* Sidebar bên trái */}
+            <div className="flex flex-1 overflow-hidden">
                 <HomeSidebar />
 
-                {/* Main content */}
-                <div className="flex-1 bg-neutral-900">
-                    {/* main content */}
-                </div>
+                <main className="flex-1 overflow-y-auto bg-[#121212] scroll-smooth">
+                    <div className="p-8 max-w-[1400px] mx-auto">
+                        <MusicDiscovery />
+                    </div>
+                </main>
             </div>
         </div>
     );
