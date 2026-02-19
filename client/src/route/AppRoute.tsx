@@ -1,14 +1,16 @@
 import { Routes, Route } from "react-router-dom"
-import Home from "../page/layout/Layout"
-import ArtistTracks from "../page/Artist/ArtistTracks"
+import ArtistSongs from "../page/Song/ArtistSongs"
 import Layout from "../page/layout/Layout"
+import Home from "../page/home/Home"
+import Playlist from "../page/playlist/playlist"
 
 function AppRoute() {
     return (
         <Routes>
             <Route element={<Layout />}>
                 <Route path="/" element={<Home />} />
-                <Route path="/artist/:id" element={<ArtistTracks />} />
+                <Route path="/artist/:id" element={<ArtistSongs />} />
+                <Route path="/playlist" element={<Playlist />} />
             </Route>
         </Routes>
     )

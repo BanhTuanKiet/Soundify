@@ -11,7 +11,7 @@ export default function Layout() {
             <div className="flex flex-1 overflow-hidden">
                 <HomeSidebar />
 
-                <main className="flex-1 overflow-y-auto bg-[#121212] scroll-smooth">
+                <main className="lg:ps-2 flex-1 overflow-y-auto bg-[#121212] scroll-smooth">
                     <div className="max-w-[1400px] mx-auto">
                         <Outlet />
                     </div>

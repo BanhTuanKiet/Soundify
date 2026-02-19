@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Library, Plus, Search, List, ArrowRight, Heart, Play, Pause, X, Volume1 } from 'lucide-react';
+import { Library, Plus, Search, List, ArrowRight, Heart, Play, Pause, X, Volume1, VolumeOff } from 'lucide-react';
 import { artistsData } from '../../util/Artist.ts'
+import type { ActiveArtistState } from '../../model/Artist.tsx';
+import { useNavigate } from 'react-router-dom';
 
 const HomeSidebar = () => {
     const [isCollapsed, setIsCollapsed] = useState(false);
-    const [activeArtistId, setActiveArtistId] = useState(3);
+    const [activeArtist, setActiveArtist] = useState<ActiveArtistState | null>(null);
+    const navigate = useNavigate()
 
     useEffect(() => {
         const handleResize = () => {
@@ -21,6 +24,10 @@ const HomeSidebar = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
+    const handleArtistId = (id: string) => {
+        navigate(`/artist/${id}`);
+    };
+
     const toggleSidebar = () => setIsCollapsed(!isCollapsed);
 
     return (
@@ -34,7 +41,7 @@ const HomeSidebar = () => {
 
             <aside
                 className={`
-                    bg-[#121212] h-screen text-[#b3b3b3] flex flex-col
+                    bg-[#1a1a1a] h-screen text-[#b3b3b3] flex flex-col
                     transition-all duration-300 ease-in-out z-50
                     fixed top-0 left-0 md:relative md:rounded-lg
                     ${isCollapsed
@@ -45,7 +52,6 @@ const HomeSidebar = () => {
             >
                 <div className="p-4 shadow-md sticky top-0 bg-[#121212] z-10 rounded-t-lg">
                     <div className={`flex items-center ${isCollapsed ? 'justify-center flex-col gap-4' : 'justify-between'}`}>
-
                         <button
                             onClick={toggleSidebar}
                             className="flex items-center gap-2 hover:text-white transition-colors group"
@@ -100,15 +106,17 @@ const HomeSidebar = () => {
                 )}
 
                 <div className="
-                    flex-1 overflow-y-hidden hover:overflow-y-auto p-2
+                    flex-1 overflow-y-hidden hover:overflow-y-auto p-2 
                     scrollbar-thin scrollbar-thumb-transparent hover:scrollbar-thumb-gray-600 scrollbar-track-transparent transition-all
                 ">
-                    <div className={`flex items-center gap-3 p-2 rounded-md hover:bg-[#1a1a1a] cursor-pointer mb-2 group ${isCollapsed ? 'justify-center' : ''}`}>
+                    <div
+                        onClick={() => navigate(`/playlist`)}
+                        className={`flex items-center gap-3 p-2 rounded-md hover:bg-[#1f1f1f] cursor-pointer mb-2 group ${isCollapsed ? 'justify-center' : ''}`}>
                         <div className="w-12 h-12 min-w-[48px] bg-gradient-to-br from-[#450af5] to-[#c4efd9] rounded-md flex items-center justify-center text-white shadow-lg">
                             <Heart size={20} fill="white" />
                         </div>
                         {!isCollapsed && (
-                            <div className="overflow-hidden">
+                            <div className="overflow-hidden" >
                                 <h4 className="text-white font-medium truncate">Liked Songs</h4>
                                 <p className="text-sm truncate text-[#9ca3af]">📌 Playlist • 7 songs</p>
                             </div>
@@ -116,13 +124,12 @@ const HomeSidebar = () => {
                     </div>
 
                     {artistsData.map((artist) => {
-                        const isActive = artist.id === activeArtistId;
+                        const isActive = activeArtist?.id == artist?.id && activeArtist.isActive;
 
                         return (
                             <div
                                 key={artist.id}
-                                onClick={() => setActiveArtistId(artist.id)}
-                                className={`group relative flex items-center gap-3 p-2 rounded-md hover:bg-[#1a1a1a] cursor-pointer ${isCollapsed ? 'justify-center' : ''}`}
+                                className={`group relative flex items-center gap-3 p-2 rounded-md hover:bg-[#1f1f1f] cursor-pointer ${isCollapsed ? 'justify-center' : ''}`}
                             >
                                 <div className="relative flex-shrink-0">
                                     <img
@@ -145,11 +152,25 @@ const HomeSidebar = () => {
                                                 <Pause
                                                     size={22}
                                                     className="text-white opacity-0 group-hover:opacity-100 transition-opacity fill-current"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setActiveArtist({
+                                                            id: artist.id,
+                                                            isActive: false,
+                                                        });
+                                                    }}
                                                 />
                                             ) : (
                                                 <Play
                                                     size={22}
                                                     className="text-white ml-1 fill-current"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setActiveArtist({
+                                                            id: artist.id,
+                                                            isActive: true,
+                                                        });
+                                                    }}
                                                 />
                                             )}
                                         </div>
@@ -157,23 +178,36 @@ const HomeSidebar = () => {
                                 </div>
 
                                 {!isCollapsed && (
-                                    <div className="flex flex-1 items-center justify-between overflow-hidden">
+                                    <div
+                                        className="flex flex-1 items-center justify-between overflow-hidden"
+                                        onClick={() => handleArtistId(artist.id)}
+                                    >
                                         <div className="overflow-hidden pr-2">
-                                            <h4 className={`font-medium truncate ${isActive ? 'text-[#1db954]' : 'text-white'}`}>{artist.name}</h4>
+                                            <h4 className={`font-medium truncate ${activeArtist?.id === artist.id ? 'text-[#1db954]' : 'text-white'}`}>{artist.name}</h4>
                                             <p className="text-sm text-[#9ca3af] truncate">Artist</p>
                                         </div>
+
                                         {isActive ? (
                                             <div className='overflow-hidden pr-2'>
                                                 <Volume1 size={20} className="text-[#1db954] fill-current" />
                                             </div>
                                         ) : (
-                                            <></>
+                                            !activeArtist?.isActive && activeArtist?.id == artist.id ? (
+                                                <div className='overflow-hidden pr-2'>
+                                                    <VolumeOff size={20} className="text-[#1db954] fill-current" />
+                                                </div>
+                                            ) : (
+                                                <></>
+                                            )
                                         )}
                                     </div>
                                 )}
 
                                 {isCollapsed && (
-                                    <div className="absolute left-[80px] z-[60] hidden group-hover:flex flex-col bg-[#282828] px-3 py-2 rounded-md shadow-2xl whitespace-nowrap min-w-max pointer-events-none">
+                                    <div
+                                        className="absolute left-[80px] z-[60] hidden group-hover:flex flex-col bg-[#282828] px-3 py-2 rounded-md shadow-2xl whitespace-nowrap min-w-max pointer-events-none"
+                                        onClick={() => handleArtistId(artist.id)}
+                                    >
                                         <h4 className="font-semibold text-white text-[15px] leading-tight mb-0.5">{artist.name}</h4>
                                         <p className="text-sm text-[#a7a7a7]">Artist</p>
                                     </div>
