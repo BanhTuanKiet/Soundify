@@ -68,7 +68,7 @@ const getAlbumById = (id: string) => MOCK_ALBUMS.find(a => a.Id === id);
 
 const MusicCard: React.FC<{ item: DisplayCardItem }> = ({ item }) => {
     return (
-        <div className="group relative p-4 bg-[#181818] hover:bg-[#282828] rounded-md transition-all duration-300 cursor-pointer w-[180px] flex-shrink-0">
+        <div className="group relative p-4 rounded-md transition-all duration-300 cursor-pointer w-[180px] flex-shrink-0">
             <div className="relative mb-4">
                 <img
                     src={item.imageUrl}
@@ -131,7 +131,7 @@ export default function MusicDiscovery() {
         return sortedSongs.map(song => {
             const album = getAlbumById(song.AlbumId);
             const artist = album ? getArtistById(album.ArtistId) : null;
-            
+
             return {
                 id: song.Id,
                 title: song.Title,
@@ -161,10 +161,10 @@ export default function MusicDiscovery() {
         return MOCK_ARTISTS.map(artist => ({
             id: artist.Id,
             title: artist.Name,
-            subtitle: 'Artist', 
+            subtitle: 'Artist',
             imageUrl: artist.AvatarUrl,
             type: 'artist',
-            isRoundImage: true 
+            isRoundImage: true
         }));
     }, []);
 
@@ -173,7 +173,7 @@ export default function MusicDiscovery() {
     }, [artistData, newReleasesData]);
 
     return (
-        <div className="min-h-screen bg-[#121212] p-6 font-sans text-white rounded">
+        <div className="bg-[#1a1a1a] p-6 font-sans text-white rounded">
             <div className="max-w-7xl mx-auto py-6">
                 <Section
                     title="Low G"

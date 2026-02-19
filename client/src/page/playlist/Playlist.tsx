@@ -75,7 +75,7 @@ export default function Playlist() {
 
                 <div className="px-8 mt-2 max-w-[1920px]">
                     <div
-                        className={`grid ${gridTemplate} px-1 py-2 text-gray-400 text-sm font-medium border-b border-white/10 mb-2 uppercase tracking-wider`}
+                        className={`grid ${gridTemplate} px-1 py-2 text-gray-400 text-sm font-medium border-b border-white/10 mb-2 tracking-wider`}
                     >
                         <div className="text-center">#</div>
                         <div>Title</div>

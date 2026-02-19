@@ -10,3 +10,8 @@ export interface Artist {
   avatarUrl?: string | null;
   createdAt: string;      
 }
+
+export interface ArtistBasic {
+    id: string
+    name: string
+}
