@@ -40,13 +40,13 @@ const MusicSidebar: React.FC<SidebarProps> = ({ isOpen, onClose, currentSong, ar
                             {currentSong.title}
                         </span>
                     </div>
-                    <div className="flex items-center gap-4 text-gray-400">
+                    <div className="flex items-center gap-4 text-gray-400 ">
                         <MoreHorizontal size={18} className="hover:text-white cursor-pointer" />
                         <Maximize2 size={16} className="hover:text-white cursor-pointer" />
                     </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto custom-scrollbar px-4 pb-10">
+                <div className="flex-1 overflow-y-auto px-4 pb-4 scrollbar-hover">
                     <div className="relative group mb-6 mt-4">
                         <img
                             src={currentSong.coverUrl || "https://via.placeholder.com/400"}

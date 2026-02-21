@@ -10,10 +10,10 @@ export function QueueItem({ song, isActive }: QueueItemProps) {
     return (
         <div
             className={`
-        flex items-center gap-3 p-2 rounded-md
-        hover:bg-[#2a2a2a] cursor-pointer group
-        ${isActive ? "text-green-500" : ""}
-      `}
+                flex items-center gap-3 p-2 rounded-md
+                hover:bg-[#2a2a2a] cursor-pointer group
+                ${isActive ? "text-green-500" : ""}
+            `}
         >
             <div className="relative w-10 h-10 shrink-0">
                 <img

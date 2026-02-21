@@ -59,44 +59,41 @@ export default function Home() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     return (
-        <div className="flex h-screen bg-[#1a1a1a] text-white overflow-hidden">
+        <div className="flex h-full w-full bg-[#121212] text-white overflow-hidden">
             <main
                 className={`
-                    flex-1 overflow-y-auto
+                    flex-1 w-full overflow-y-auto overflow-x-hidden
                     transition-all duration-300 ease-in-out
+                    scrollbar-hover overflow-x-hidden
                 `}
             >
-                <MusicDiscovery />
-                <Footer />
+                <div className="w-full h-full">
+                    <MusicDiscovery />
+                    <Footer />
+                </div>
             </main>
 
-            {
-                isSidebarOpen ? (
-                    <aside className="w-[350px] h-full border-l border-white/10">
-                        <NowPlayingPanel
-                            isOpen={isSidebarOpen}
-                            onClose={() => setIsSidebarOpen(false)}
-                            artists={MOCK_ARTISTS}
-                            currentSong={CURRENT_SONG}
-                            nextInQueue={NEXT_SONG}
-                        />
-                    </aside>
+            <aside
+                className={`
+                    h-full border-l border-white/10 transition-all duration-300 ease-in-out flex-shrink-0 scrollbar-hover overflow-x-hidden
+                    ${isSidebarOpen
+                        ? 'w-[100%] md:w-[50%] lg:w-[40%] xl:w-[35%] 2xl:w-[30%]'
+                        : 'w-[15%] md:w-[8%] lg:w-[5%] min-w-[60px] max-w-[80px]'
+                    }
+                `}
+            >
+                {isSidebarOpen ? (
+                    <NowPlayingPanel
+                        isOpen={isSidebarOpen}
+                        onClose={() => setIsSidebarOpen(false)}
+                        artists={MOCK_ARTISTS}
+                        currentSong={CURRENT_SONG}
+                        nextInQueue={NEXT_SONG}
+                    />
                 ) : (
-                    <aside
-                        className="
-                            w-[4%]
-                            hover:w-[5%]
-                            h-full
-                            border-l border-white/10
-                            transition-all duration-300 ease-in-out
-                        "
-                    >
-                        <NowPlayingRail
-                            onOpen={() => setIsSidebarOpen(true)}
-                        />
-                    </aside>
-                )
-            }
+                    <NowPlayingRail onOpen={() => setIsSidebarOpen(true)} />
+                )}
+            </aside>
         </div>
     );
 }

@@ -78,3 +78,71 @@ export const artistsData = [
         avatar: "https://ui-avatars.com/api/?name=Vu&background=random",
     },
 ];
+
+export const followingArtists = [
+    {
+        id: "son-tung-mtp",
+        name: "Son Tung M-TP",
+        avatarUrl: "https://ui-avatars.com/api/?name=Son+Tung&background=random",
+    },
+    {
+        id: "den-vau",
+        name: "Den Vau",
+        avatarUrl: "https://ui-avatars.com/api/?name=Den+Vau&background=000&color=fff",
+    },
+    {
+        id: "low-g",
+        name: "Low G",
+        avatarUrl: "https://ui-avatars.com/api/?name=Low+G&background=ff0000&color=fff",
+    },
+    {
+        id: "tlinh",
+        name: "tlinh",
+        avatarUrl: "https://ui-avatars.com/api/?name=tlinh&background=pink&color=fff",
+    },
+    {
+        id: "wren-evans",
+        name: "Wren Evans",
+        avatarUrl: "https://ui-avatars.com/api/?name=Wren+Evans&background=random",
+    },
+    {
+        id: "da-lab",
+        name: "Da LAB",
+        avatarUrl: "https://ui-avatars.com/api/?name=Da+LAB&background=random",
+    },
+    {
+        id: "bui-truong-linh",
+        name: "Bui Truong Linh",
+        avatarUrl: "https://ui-avatars.com/api/?name=Bui+Truong+Linh&background=random",
+    },
+    {
+        id: "dat-g",
+        name: "Dat G",
+        avatarUrl: "https://ui-avatars.com/api/?name=Dat+G&background=random",
+    },
+    {
+        id: "amee",
+        name: "AMEE",
+        avatarUrl: "https://ui-avatars.com/api/?name=AMEE&background=pink&color=fff",
+    },
+    {
+        id: "b-ray",
+        name: "B Ray",
+        avatarUrl: "https://ui-avatars.com/api/?name=B+Ray&background=random",
+    },
+    {
+        id: "wxrdie",
+        name: "Wxrdie",
+        avatarUrl: "https://ui-avatars.com/api/?name=Wxrdie&background=random",
+    },
+    {
+        id: "obito",
+        name: "Obito",
+        avatarUrl: "https://ui-avatars.com/api/?name=Obito&background=random",
+    },
+    {
+        id: "vu",
+        name: "Vu.",
+        avatarUrl: "https://ui-avatars.com/api/?name=Vu&background=random",
+    },
+];

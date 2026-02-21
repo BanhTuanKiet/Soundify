@@ -68,26 +68,29 @@ const getAlbumById = (id: string) => MOCK_ALBUMS.find(a => a.Id === id);
 
 const MusicCard: React.FC<{ item: DisplayCardItem }> = ({ item }) => {
     return (
-        <div className="group relative p-4 rounded-md transition-all duration-300 cursor-pointer w-[180px] flex-shrink-0">
+        <div className="group relative p-3 rounded-md transition-all duration-300 cursor-pointer w-full hover:bg-[#282828] bg-transparent">
             <div className="relative mb-4">
-                <img
-                    src={item.imageUrl}
-                    alt={item.title}
-                    className={`w-full aspect-square object-cover shadow-lg ${item.isRoundImage ? 'rounded-full' : 'rounded-md'}`}
-                />
+                <div className="aspect-square w-full mb-4 shadow-lg overflow-hidden">
+                    <img
+                        src={item.imageUrl}
+                        alt={item.title}
+                        className={`w-full h-full object-cover ${!item.isRoundImage ? 'rounded-full' : 'rounded-md'
+                            }`}
+                    />
+                </div>
 
-                <div className={`absolute bottom-2 right-2 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 shadow-xl z-10`}>
-                    <button className="bg-green-500 rounded-full p-3 text-black hover:scale-105 hover:bg-green-400 flex items-center justify-center">
+                <div className="absolute bottom-2 right-2 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 shadow-xl z-10">
+                    <button className="bg-green-500 rounded-full p-3 text-black hover:scale-105 hover:bg-green-400 flex items-center justify-center shadow-2xl">
                         <Play fill="black" size={20} className="ml-1" />
                     </button>
                 </div>
             </div>
 
-            <div className="flex flex-col gap-1 min-h-[60px]">
-                <h3 className="text-white font-bold truncate text-base" title={item.title}>
+            <div className="flex flex-col gap-1 min-h-[50px]">
+                <h3 className="text-white font-bold truncate text-sm md:text-base" title={item.title}>
                     {item.title}
                 </h3>
-                <p className="text-[#a7a7a7] text-sm line-clamp-2 font-medium flex items-center gap-1">
+                <p className="text-[#a7a7a7] text-xs md:text-sm line-clamp-2 font-medium">
                     {item.subtitle}
                 </p>
             </div>
@@ -99,15 +102,15 @@ const Section: React.FC<{ title: string; subTitle?: string; items: DisplayCardIt
     if (items.length === 0) return null;
 
     return (
-        <div className="mb-8">
-            <div className="flex justify-between items-end mb-4 px-4">
+        <div className="mb-8 px-4 md:px-6">
+            <div className="flex justify-between items-end mb-4">
                 <div>
                     {subTitle && (
-                        <p className="text-[10px] text-[#b3b3b3] uppercase tracking-wide font-bold">
+                        <p className="text-[10px] md:text-xs text-[#b3b3b3] uppercase tracking-widest font-bold mb-1">
                             {subTitle}
                         </p>
                     )}
-                    <h2 className="text-2xl font-bold text-white hover:underline cursor-pointer">
+                    <h2 className="text-xl md:text-2xl font-bold text-white hover:underline cursor-pointer tracking-tight">
                         {title}
                     </h2>
                 </div>
@@ -115,7 +118,13 @@ const Section: React.FC<{ title: string; subTitle?: string; items: DisplayCardIt
                     Show all
                 </button>
             </div>
-            <div className="flex overflow-x-auto gap-6 px-4 pb-4 scrollbar-hide snap-x">
+
+            <div
+                className="grid gap-4 md:gap-6"
+                style={{
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))'
+                }}
+            >
                 {items.map((item) => (
                     <MusicCard key={item.id} item={item} />
                 ))}
@@ -173,8 +182,8 @@ export default function MusicDiscovery() {
     }, [artistData, newReleasesData]);
 
     return (
-        <div className="bg-[#1a1a1a] p-6 font-sans text-white rounded">
-            <div className="max-w-7xl mx-auto py-6">
+        <div className="bg-[#121212] min-h-screen font-sans text-white">
+            <div className="max-w-[1400px] mx-auto py-8">
                 <Section
                     title="Low G"
                     subTitle="More Like"
@@ -191,11 +200,6 @@ export default function MusicDiscovery() {
                     title="Suggested Artists"
                     items={artistData}
                 />
-
-                {/* <Section
-                    title="New Releases"
-                    items={newReleasesData}
-                /> */}
             </div>
         </div>
     );

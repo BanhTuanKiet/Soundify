@@ -1,7 +1,10 @@
 import { Bell, Home, Search, Download, Menu } from "lucide-react";
 import spotifyIcon from "../../asset/image/Spotify_logo_without_text.svg.png";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
+    const navigate = useNavigate()
+
     return (
         <header className="sticky top-0 z-50 h-16 bg-black px-2 md:px-4 flex items-center justify-between gap-2">
 
@@ -15,13 +18,16 @@ export default function Header() {
                     src={spotifyIcon}
                     alt="Spotify"
                     className="w-8 h-8 min-w-[32px]"
+                    onClick={() => navigate("/")}
                 />
             </div>
 
             {/* CENTER: Home + Search */}
             <div className="flex items-center gap-2 md:gap-3 flex-1 max-w-xl mx-2 md:mx-6">
                 {/* Home button - Ẩn text/icon phụ trên mobile nếu quá chật, nhưng ở đây Spotify giữ lại icon */}
-                <button className="w-10 h-10 min-w-[40px] flex items-center justify-center rounded-full bg-[#1f1f1f] hover:bg-[#2a2a2a] transition">
+                <button
+                    onClick={() => navigate("/")}
+                    className="w-10 h-10 min-w-[40px] flex items-center justify-center rounded-full bg-[#1f1f1f] hover:bg-[#2a2a2a] transition">
                     <Home className="text-white" size={20} />
                 </button>
 

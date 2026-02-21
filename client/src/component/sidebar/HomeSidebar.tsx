@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Library, Plus, Search, List, ArrowRight, Heart, Play, Pause, X, Volume1, VolumeOff } from 'lucide-react';
-import { artistsData } from '../../util/Artist.ts'
-import type { ActiveArtistState } from '../../model/Artist.tsx';
+import { Library, Plus, Search, List, ArrowRight, Heart, X } from 'lucide-react';
+import { followingArtists } from '../../util/Artist.ts'
 import { useNavigate } from 'react-router-dom';
+import type { ActiveArtistState } from '../../model/Artist.tsx';
+import FollowingArtist from '../card/FollowingArtist.tsx';
 
 const HomeSidebar = () => {
-    const [isCollapsed, setIsCollapsed] = useState(false);
     const [activeArtist, setActiveArtist] = useState<ActiveArtistState | null>(null);
+    const [isCollapsed, setIsCollapsed] = useState(false);
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -24,10 +25,6 @@ const HomeSidebar = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const handleArtistId = (id: string) => {
-        navigate(`/artist/${id}`);
-    };
-
     const toggleSidebar = () => setIsCollapsed(!isCollapsed);
 
     return (
@@ -41,16 +38,16 @@ const HomeSidebar = () => {
 
             <aside
                 className={`
-                    bg-[#1a1a1a] h-screen text-[#b3b3b3] flex flex-col
-                    transition-all duration-300 ease-in-out z-50
-                    fixed top-0 left-0 md:relative md:rounded-lg
-                    ${isCollapsed
+                bg-[#1a1a1a] text-[#b3b3b3] flex flex-col
+                transition-all duration-300 ease-in-out z-50
+                fixed top-0 left-0 md:relative md:rounded-lg h-full
+                ${isCollapsed
                         ? '-translate-x-full md:translate-x-0 md:w-20'
                         : 'translate-x-0 w-4/5 sm:w-1/2 md:w-[23.5%] md:min-w-[260px]'
                     }
-                `}
+            `}
             >
-                <div className="p-4 shadow-md sticky top-0 bg-[#121212] z-10 rounded-t-lg">
+                <div className="p-4 pb-2 sticky top-0 bg-[#1a1a1a] z-10 rounded-t-lg shrink-0">
                     <div className={`flex items-center ${isCollapsed ? 'justify-center flex-col gap-4' : 'justify-between'}`}>
                         <button
                             onClick={toggleSidebar}
@@ -93,128 +90,48 @@ const HomeSidebar = () => {
                     )}
                 </div>
 
-                {!isCollapsed && (
-                    <div className="px-4 py-2 flex justify-between items-center">
-                        <button className="hover:bg-[#2a2a2a] p-1 rounded-full hover:text-white">
-                            <Search size={18} />
-                        </button>
-                        <div className="flex items-center gap-1 text-sm hover:text-white cursor-pointer hover:scale-105 transition-transform">
-                            <span>Recents</span>
-                            <List size={18} />
-                        </div>
-                    </div>
-                )}
-
-                <div className="
-                    flex-1 overflow-y-hidden hover:overflow-y-auto p-2 
-                    scrollbar-thin scrollbar-thumb-transparent hover:scrollbar-thumb-gray-600 scrollbar-track-transparent transition-all
-                ">
-                    <div
-                        onClick={() => navigate(`/playlist`)}
-                        className={`flex items-center gap-3 p-2 rounded-md hover:bg-[#1f1f1f] cursor-pointer mb-2 group ${isCollapsed ? 'justify-center' : ''}`}>
-                        <div className="w-12 h-12 min-w-[48px] bg-gradient-to-br from-[#450af5] to-[#c4efd9] rounded-md flex items-center justify-center text-white shadow-lg">
-                            <Heart size={20} fill="white" />
-                        </div>
-                        {!isCollapsed && (
-                            <div className="overflow-hidden" >
-                                <h4 className="text-white font-medium truncate">Liked Songs</h4>
-                                <p className="text-sm truncate text-[#9ca3af]">📌 Playlist • 7 songs</p>
+                <div className="flex-1 overflow-y-hidden hover:overflow-y-auto scrollbar-hover px-2">
+                    {!isCollapsed && (
+                        <div className="px-2 py-2 flex justify-between items-center">
+                            <button className="hover:bg-[#2a2a2a] p-2 rounded-full hover:text-white transition-colors">
+                                <Search size={18} />
+                            </button>
+                            <div className="flex items-center gap-1 text-sm hover:text-white cursor-pointer hover:scale-105 transition-transform pr-1">
+                                <span>Recents</span>
+                                <List size={18} />
                             </div>
-                        )}
-                    </div>
+                        </div>
+                    )}
 
-                    {artistsData.map((artist) => {
-                        const isActive = activeArtist?.id == artist?.id && activeArtist.isActive;
-
-                        return (
-                            <div
-                                key={artist.id}
-                                className={`group relative flex items-center gap-3 p-2 rounded-md hover:bg-[#1f1f1f] cursor-pointer ${isCollapsed ? 'justify-center' : ''}`}
-                            >
-                                <div className="relative flex-shrink-0">
-                                    <img
-                                        src={artist.avatar}
-                                        alt={artist.name}
-                                        className={`w-12 h-12 rounded-full object-cover shadow-sm transition-all ${!isCollapsed && isActive ? 'opacity-100' : ''
-                                            } ${!isCollapsed ? 'group-hover:opacity-50' : ''}`}
-                                    />
-
-                                    {!isCollapsed && (
-                                        <div
-                                            className="
-                                                absolute inset-0 flex items-center justify-center rounded-full
-                                                bg-black/40 opacity-0
-                                                group-hover:opacity-100
-                                                transition-opacity duration-200
-                                            "
-                                        >
-                                            {isActive ? (
-                                                <Pause
-                                                    size={22}
-                                                    className="text-white opacity-0 group-hover:opacity-100 transition-opacity fill-current"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setActiveArtist({
-                                                            id: artist.id,
-                                                            isActive: false,
-                                                        });
-                                                    }}
-                                                />
-                                            ) : (
-                                                <Play
-                                                    size={22}
-                                                    className="text-white ml-1 fill-current"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setActiveArtist({
-                                                            id: artist.id,
-                                                            isActive: true,
-                                                        });
-                                                    }}
-                                                />
-                                            )}
-                                        </div>
-                                    )}
+                    <div className="space-y-1">
+                        <div
+                            onClick={() => navigate(`/playlist`)}
+                            className={`flex items-center gap-3 p-2 rounded-md hover:bg-[#1f1f1f] cursor-pointer group ${isCollapsed ? 'justify-center' : ''}`}>
+                            <div className="w-12 h-12 min-w-[48px] bg-gradient-to-br from-[#450af5] to-[#c4efd9] rounded-md flex items-center justify-center text-white shadow-lg">
+                                <Heart size={20} fill="white" />
+                            </div>
+                            {!isCollapsed && (
+                                <div className="overflow-hidden" >
+                                    <h4 className="text-white font-medium truncate">Liked Songs</h4>
+                                    <p className="text-sm truncate text-[#9ca3af]">📌 Playlist • 7 songs</p>
                                 </div>
+                            )}
+                        </div>
 
-                                {!isCollapsed && (
-                                    <div
-                                        className="flex flex-1 items-center justify-between overflow-hidden"
-                                        onClick={() => handleArtistId(artist.id)}
-                                    >
-                                        <div className="overflow-hidden pr-2">
-                                            <h4 className={`font-medium truncate ${activeArtist?.id === artist.id ? 'text-[#1db954]' : 'text-white'}`}>{artist.name}</h4>
-                                            <p className="text-sm text-[#9ca3af] truncate">Artist</p>
-                                        </div>
+                        {followingArtists.map((artist) => {
+                            const isActive = activeArtist?.id == artist?.id && activeArtist.isActive;
 
-                                        {isActive ? (
-                                            <div className='overflow-hidden pr-2'>
-                                                <Volume1 size={20} className="text-[#1db954] fill-current" />
-                                            </div>
-                                        ) : (
-                                            !activeArtist?.isActive && activeArtist?.id == artist.id ? (
-                                                <div className='overflow-hidden pr-2'>
-                                                    <VolumeOff size={20} className="text-[#1db954] fill-current" />
-                                                </div>
-                                            ) : (
-                                                <></>
-                                            )
-                                        )}
-                                    </div>
-                                )}
-
-                                {isCollapsed && (
-                                    <div
-                                        className="absolute left-[80px] z-[60] hidden group-hover:flex flex-col bg-[#282828] px-3 py-2 rounded-md shadow-2xl whitespace-nowrap min-w-max pointer-events-none"
-                                        onClick={() => handleArtistId(artist.id)}
-                                    >
-                                        <h4 className="font-semibold text-white text-[15px] leading-tight mb-0.5">{artist.name}</h4>
-                                        <p className="text-sm text-[#a7a7a7]">Artist</p>
-                                    </div>
-                                )}
-                            </div>
-                        );
-                    })}
+                            return (
+                                <FollowingArtist
+                                    artist={artist}
+                                    activeArtist={activeArtist}
+                                    setActiveArtist={setActiveArtist}
+                                    isActive={isActive}
+                                    isCollapsed={isCollapsed}
+                                />
+                            );
+                        })}
+                    </div>
                 </div>
             </aside>
         </>

@@ -13,5 +13,6 @@ export interface Artist {
 
 export interface ArtistBasic {
     id: string
+    avatarUrl: string 
     name: string
 }
