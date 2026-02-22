@@ -133,7 +133,7 @@ const Section: React.FC<{ title: string; subTitle?: string; items: DisplayCardIt
     );
 };
 
-export default function MusicDiscovery() {
+export default function MusicDiscoveryCard() {
     const trendingData: DisplayCardItem[] = useMemo(() => {
         const sortedSongs = [...MOCK_SONGS].sort((a, b) => b.PlayCount - a.PlayCount);
 

@@ -1,3 +1,6 @@
+import type { Artist } from "../model/Artist";
+import type { NextSong, Song } from "../model/Song";
+
 export const artistsData = [
     {
         id: "son-tung-mtp",
@@ -146,3 +149,52 @@ export const followingArtists = [
         avatarUrl: "https://ui-avatars.com/api/?name=Vu&background=random",
     },
 ];
+
+export const MOCK_ARTISTS: Artist[] = [
+    {
+        id: 'a1',
+        name: 'Anh Bằng',
+        bio: 'Nghệ sĩ trẻ tài năng...',
+        avatarUrl: 'https://i.scdn.co/image/ab6761610000e5ebed32008453489e223048a60f',
+        createdAt: new Date().toISOString(),
+    },
+    {
+        id: 'a2',
+        name: '24k.Right',
+        bio: 'Rapper nổi tiếng từ sân chơi Rap Việt.',
+        avatarUrl: 'https://i.scdn.co/image/ab6761610000e5eb473062886c5f7e7f722c1533',
+        createdAt: new Date().toISOString(),
+    },
+    {
+        id: 'a3',
+        name: 'Nhism',
+        bio: 'Streamer kiêm nghệ sĩ giải trí.',
+        avatarUrl: 'https://i.scdn.co/image/ab6761610000e5eb797441584b423f790c50d180',
+        createdAt: new Date().toISOString(),
+    }
+];
+
+export const CURRENT_SONG: Song & { coverUrl: string } = {
+    id: 's1',
+    title: 'Anh Tên Là',
+    albumId: 'alb1',
+    genreId: 1,
+    fileUrl: 'https://example.com/song.mp3',
+    durationSeconds: 180,
+    fileSizeMb: 5.5,
+    playCount: 1500000,
+    isExplicit: false,
+    createdAt: new Date().toISOString(),
+    coverUrl: 'https://photo-resize-zmp3.zmdcdn.me/w600_r1x1_jpeg/cover/3/2/e/e/32ee8fd0248316140536c4b92b618841.jpg',
+};
+
+export const NEXT_SONG: NextSong = {
+    id: 's2',
+    title: 'Hai Thằng Bịp',
+    artists: [
+        { id: 'a1', name: 'Anh Bằng', avatarUrl: "" },
+        { id: 'a2', name: 'Mason Nguyen', avatarUrl: "" }
+    ],
+    coverUrl: 'https://i.scdn.co/image/ab67616d0000b2734a706599b5032904033b006c',
+    isExplicit: true,
+};

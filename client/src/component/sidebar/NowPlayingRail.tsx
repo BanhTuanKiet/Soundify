@@ -1,6 +1,7 @@
 import { ChevronLeft } from "lucide-react";
+import { memo } from "react";
 
-function NowPlayingRail({ onOpen }: { onOpen: () => void }) {
+const NowPlayingRail = ({ onOpen }: { onOpen: () => void }) => {
     return (
         <div
             onClick={onOpen}
@@ -16,4 +17,4 @@ function NowPlayingRail({ onOpen }: { onOpen: () => void }) {
     );
 }
 
-export default NowPlayingRail;
+export default memo(NowPlayingRail);

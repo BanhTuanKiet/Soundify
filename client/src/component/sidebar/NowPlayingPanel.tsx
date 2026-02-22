@@ -12,7 +12,7 @@ interface SidebarProps {
     nextInQueue: NextSong;
 }
 
-const MusicSidebar: React.FC<SidebarProps> = ({ isOpen, onClose, currentSong, artists, nextInQueue }) => {
+const NowPlayingPanel: React.FC<SidebarProps> = ({ isOpen, onClose, currentSong, artists, nextInQueue }) => {
     const [isQueueOpen, setIsQueueOpen] = useState(false);
 
     if (!currentSong) return null;
@@ -20,14 +20,18 @@ const MusicSidebar: React.FC<SidebarProps> = ({ isOpen, onClose, currentSong, ar
     return (
         <aside
             className={`
-                relative w-[350px] h-full
-                bg-black text-white
-                transition-transform duration-300 ease-in-out
+                /* Mobile: Fixed đè lên màn hình | Desktop: Relative nằm chung flex flow */
+                fixed md:relative top-0 right-0 h-full z-40
+                shrink-0 bg-black text-white
+                transition-all duration-300 ease-in-out
                 overflow-hidden 
-                ${isOpen ? "translate-x-0" : "translate-x-full"}
+                ${isOpen 
+                    ? "w-full md:w-[300px] lg:w-[350px] translate-x-0" 
+                    : "w-full md:w-0 translate-x-full md:translate-x-0"}
             `}
         >
-            <div className="flex flex-col h-full w-full">
+            {/* Thêm w-[350px] bên trong để nội dung không bị vỡ layout khi wrapper bị bóp w-0 lúc animate */}
+            <div className="flex flex-col h-full w-full md:w-[300px] lg:w-[350px]">
                 <div className="h-14 px-4 flex items-center justify-between border-b border-white/10 shrink-0 bg-black">
                     <div className="flex items-center gap-3 min-w-0">
                         <button
@@ -131,4 +135,4 @@ const MusicSidebar: React.FC<SidebarProps> = ({ isOpen, onClose, currentSong, ar
     );
 };
 
-export default MusicSidebar;
+export default NowPlayingPanel;

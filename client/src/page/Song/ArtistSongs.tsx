@@ -61,7 +61,7 @@ const ArtistSongs: React.FC = () => {
     console.log(songs)
 
     return (
-        <div className="min-h-screen text-white font-sans antialiased bg-[#1a1a1a]">
+        <div className="text-white font-sans antialiased bg-[#121212]">
             <div
                 className="relative h-[40vh] min-h-[340px] w-full bg-cover bg-center bg-no-repeat"
                 style={{
@@ -76,7 +76,7 @@ const ArtistSongs: React.FC = () => {
                 </div>
             </div>
 
-            <main className="flex-1 min-w-0 overflow-x-hidden">
+            <main className="flex-1 min-w-0 overflow-x-hidden ">
                 <div
                     className="sticky top-0 z-50 w-full"
                     style={{

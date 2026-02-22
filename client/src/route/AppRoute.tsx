@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom"
 import ArtistSongs from "../page/Song/ArtistSongs"
 import Layout from "../page/layout/Layout"
 import Home from "../page/home/Home"
-import Playlist from "../page/playlist/playlist"
+import Playlist from "../page/playlist/Playlist"
 
 function AppRoute() {
     return (
