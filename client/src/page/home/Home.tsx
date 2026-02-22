@@ -7,8 +7,7 @@ export default function Home() {
             <main
                 className={`
                     flex-1 w-full overflow-y-auto overflow-x-hidden
-                    transition-all duration-300 ease-in-out
-                    scrollbar-hover overflow-x-hidden
+                    transition-all duration-300 ease-in-out scrollbar-hover
                 `}
             >
                 <div className="w-full h-full">

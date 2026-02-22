@@ -74,8 +74,7 @@ const MusicCard: React.FC<{ item: DisplayCardItem }> = ({ item }) => {
                     <img
                         src={item.imageUrl}
                         alt={item.title}
-                        className={`w-full h-full object-cover ${!item.isRoundImage ? 'rounded-full' : 'rounded-md'
-                            }`}
+                        className={`w-full h-full object-cover ${!item.isRoundImage ? 'rounded-full' : 'rounded-md'}`}
                     />
                 </div>
 

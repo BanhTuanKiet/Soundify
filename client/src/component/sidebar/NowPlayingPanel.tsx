@@ -20,17 +20,14 @@ const NowPlayingPanel: React.FC<SidebarProps> = ({ isOpen, onClose, currentSong,
     return (
         <aside
             className={`
-                /* Mobile: Fixed đè lên màn hình | Desktop: Relative nằm chung flex flow */
                 fixed md:relative top-0 right-0 h-full z-40
-                shrink-0 bg-black text-white
+                shrink-0 bg-black text-white overflow-hidden 
                 transition-all duration-300 ease-in-out
-                overflow-hidden 
                 ${isOpen 
                     ? "w-full md:w-[300px] lg:w-[350px] translate-x-0" 
                     : "w-full md:w-0 translate-x-full md:translate-x-0"}
             `}
         >
-            {/* Thêm w-[350px] bên trong để nội dung không bị vỡ layout khi wrapper bị bóp w-0 lúc animate */}
             <div className="flex flex-col h-full w-full md:w-[300px] lg:w-[350px]">
                 <div className="h-14 px-4 flex items-center justify-between border-b border-white/10 shrink-0 bg-black">
                     <div className="flex items-center gap-3 min-w-0">

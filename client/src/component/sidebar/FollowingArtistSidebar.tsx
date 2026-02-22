@@ -51,9 +51,9 @@ const FollowingArtistSidebar = ({ isExpanded, setIsExpanded }: FollowingArtistSi
 
             <aside
                 className={`
-                    bg-[#121212] text-[#b3b3b3] flex flex-col
+                    flex flex-col
                     transition-all duration-300 ease-in-out z-50
-                    fixed top-0 left-0 md:relative md:rounded-lg h-full
+                    fixed top-0 left-0 md:relative  h-full
                     ${isCollapsed
                         ? '-translate-x-full md:translate-x-0 md:w-20 shrink-0'
                         : isExpanded
@@ -112,31 +112,47 @@ const FollowingArtistSidebar = ({ isExpanded, setIsExpanded }: FollowingArtistSi
 
                 <div className="flex-1 overflow-y-hidden hover:overflow-y-auto scrollbar-hover px-2 pb-4">
                     {!isCollapsed && (
-                        <div className="px-2 py-2 flex justify-between items-center h-12">
-                            <div className="flex items-center flex-1">
-                                {isSearchOpen || isExpanded ? (
-                                    <div className={`flex items-center bg-[#121212] rounded-md px-2 py-1.5 transition-all ${isExpanded ? 'w-64' : 'w-full max-w-[180px]'}`}>
-                                        <Search size={18} className="text-[#b3b3b3] shrink-0" />
-                                        <input
-                                            type="text"
-                                            placeholder="Search in Your Library"
-                                            className="bg-transparent border-none text-white text-sm focus:outline-none ml-2 w-full"
-                                            value={searchQuery}
-                                            onChange={(e) => setSearchQuery(e.target.value)}
-                                            autoFocus={!isExpanded}
-                                        />
-                                        <X
-                                            size={16}
-                                            className="cursor-pointer hover:text-white shrink-0"
-                                            onClick={() => {
-                                                setIsSearchOpen(false);
-                                                setSearchQuery('');
-                                            }}
-                                        />
-                                    </div>
-                                ) : (
+                        <div className="px-2 py-2 flex items-center h-12 gap-2 overflow-hidden">
+                            <div className="relative flex-1 min-w-0">
+                                <div
+                                    className={`
+                                        absolute left-0 top-1/2 -translate-y-1/2
+                                        flex items-center gap-2
+                                        bg-[#2a2a2a]
+                                        rounded-md px-2 py-1.5
+                                        w-full
+                                        transition-all duration-300 ease-out
+                                        origin-left
+                                        ${isSearchOpen || isExpanded
+                                            ? 'opacity-100 translate-x-0 scale-x-100 pointer-events-auto'
+                                            : 'opacity-0 -translate-x-4 scale-x-95 pointer-events-none'
+                                        }
+                                    `}
+                                >
+                                    <Search size={18} className="text-[#b3b3b3] shrink-0" />
+
+                                    <input
+                                        type="text"
+                                        placeholder="Search in Your Library"
+                                        className="flex-1 min-w-0 bg-transparent text-white text-sm focus:outline-none"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        autoFocus={isSearchOpen && !isExpanded}
+                                    />
+
+                                    <X
+                                        size={16}
+                                        className="cursor-pointer text-[#b3b3b3] hover:text-white shrink-0"
+                                        onClick={() => {
+                                            setIsSearchOpen(false);
+                                            setSearchQuery('');
+                                        }}
+                                    />
+                                </div>
+
+                                {!isSearchOpen && !isExpanded && (
                                     <button
-                                        className="hover:bg-[#2a2a2a] p-2 rounded-full hover:text-white transition-colors"
+                                        className="p-2 rounded-full hover:bg-[#2a2a2a] hover:text-white transition-all"
                                         onClick={() => setIsSearchOpen(true)}
                                     >
                                         <Search size={18} />
@@ -144,7 +160,7 @@ const FollowingArtistSidebar = ({ isExpanded, setIsExpanded }: FollowingArtistSi
                                 )}
                             </div>
 
-                            <div className="flex items-center gap-1 text-sm hover:text-white cursor-pointer hover:scale-105 transition-transform pr-1 shrink-0 ml-2">
+                            <div className="flex items-center gap-1 text-sm hover:text-white cursor-pointer hover:scale-105 transition-transform shrink-0">
                                 <span>Recents</span>
                                 <List size={18} />
                             </div>

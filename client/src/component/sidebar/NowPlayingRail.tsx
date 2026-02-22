@@ -8,8 +8,7 @@ const NowPlayingRail = ({ onOpen }: { onOpen: () => void }) => {
             className="
                 h-full flex items-center justify-center
                 cursor-pointer
-                hover:bg-white/5
-                transition-colors
+                hover:bg-white/5 transition-colors
             "
         >
             <ChevronLeft size={22} className="text-gray-400" />
