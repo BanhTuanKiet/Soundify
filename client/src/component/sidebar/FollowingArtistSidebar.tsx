@@ -4,15 +4,24 @@ import { followingArtists } from '../../util/Artist.ts'
 import { useNavigate } from 'react-router-dom';
 import type { ActiveArtistState } from '../../model/Artist.tsx';
 import FollowingArtistCard from '../card/FollowingArtistCard.tsx';
+import { DEFAULT_LEFT_WIDTH, MEDIUM_SCREEN, MIN_LEFT_WIDTH } from '../../util/Size.ts';
 
 type FollowingArtistSidebarProps = {
-    isExpanded: boolean
-    setIsExpanded: (isExpanded: boolean) => void
+    isExpanded: boolean;
+    setIsExpanded: (isExpanded: boolean) => void;
+    isCollapsed: boolean;
+    setIsCollapsed: (isCollapsed: boolean) => void;
+    setLeftWidth: (leftWidth: number) => void;
 }
 
-const FollowingArtistSidebar = ({ isExpanded, setIsExpanded }: FollowingArtistSidebarProps) => {
+const FollowingArtistSidebar = ({
+    isExpanded,
+    setIsExpanded,
+    isCollapsed,
+    setIsCollapsed,
+    setLeftWidth
+}: FollowingArtistSidebarProps) => {
     const [activeArtist, setActiveArtist] = useState<ActiveArtistState | null>(null);
-    const [isCollapsed, setIsCollapsed] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [isSearchOpen, setIsSearchOpen] = useState(false);
 
@@ -20,7 +29,7 @@ const FollowingArtistSidebar = ({ isExpanded, setIsExpanded }: FollowingArtistSi
 
     useEffect(() => {
         const handleResize = () => {
-            if (window.innerWidth < 1024) {
+            if (window.innerWidth < MEDIUM_SCREEN) {
                 setIsCollapsed(true);
                 setIsExpanded(false);
             } else {
@@ -33,8 +42,20 @@ const FollowingArtistSidebar = ({ isExpanded, setIsExpanded }: FollowingArtistSi
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const toggleSidebar = () => setIsCollapsed(!isCollapsed);
-    const toggleExpand = () => setIsExpanded(!isExpanded);
+    const toggleSidebar = () => {
+        if (isCollapsed) {
+            setLeftWidth(DEFAULT_LEFT_WIDTH);
+        } else {
+            setLeftWidth(MIN_LEFT_WIDTH);
+        }
+
+        setIsCollapsed(!isCollapsed);
+    };
+
+    const toggleExpand = () => {
+        setIsExpanded(!isExpanded);
+        setLeftWidth(DEFAULT_LEFT_WIDTH)
+    }
 
     const filteredArtists = followingArtists.filter(artist =>
         artist?.name?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -51,33 +72,33 @@ const FollowingArtistSidebar = ({ isExpanded, setIsExpanded }: FollowingArtistSi
 
             <aside
                 className={`
-                    flex flex-col
-                    transition-all duration-300 ease-in-out z-50
-                    fixed top-0 left-0 md:relative  h-full
+                    flex flex-col h-full w-full bg-[#121212]
+                    transition-none
                     ${isCollapsed
-                        ? '-translate-x-full md:translate-x-0 md:w-20 shrink-0'
-                        : isExpanded
-                            ? 'translate-x-0 w-full md:flex-1'
-                            : 'translate-x-0 w-[80%] sm:w-[50%] md:w-[280px] lg:w-[350px] shrink-0'
+                        ? 'items-center relative'
+                        : 'fixed top-0 left-0 z-50 md:relative md:z-auto'
                     }
                 `}
             >
                 <div className="p-4 pb-2 sticky top-0 bg-[#121212] z-10 rounded-t-lg shrink-0">
                     <div className={`flex items-center ${isCollapsed ? 'justify-center flex-col gap-4' : 'justify-between'}`}>
-                        <button
-                            onClick={toggleSidebar}
-                            className="flex items-center gap-2 hover:text-white transition-colors group"
-                            title="Toggle Library"
-                        >
-                            <Library size={28} />
-                            {!isCollapsed && <span className="font-bold text-base whitespace-nowrap">Your Library</span>}
-                        </button>
+                        {!isExpanded && (
+                            <button
+                                onClick={toggleSidebar}
+                                className="flex items-center gap-2 hover:text-white transition-colors group"
+                                title="Toggle Library"
+                            >
+                                <Library size={28} />
+                            </button>
+                        )}
+
+                        {!isCollapsed && <span className="font-bold text-base whitespace-nowrap">Your Library</span>}
 
                         <div className={`flex items-center gap-2 ${isCollapsed ? 'flex-col' : ''}`}>
                             {!isCollapsed && (
                                 <button
                                     className="md:hidden hover:bg-[#2a2a2a] p-2 rounded-full hover:text-white transition"
-                                    onClick={() => setIsCollapsed(true)}
+                                    onClick={toggleSidebar}
                                 >
                                     <X size={20} />
                                 </button>
@@ -194,7 +215,7 @@ const FollowingArtistSidebar = ({ isExpanded, setIsExpanded }: FollowingArtistSi
                             {!isCollapsed && (
                                 <div className={`overflow-hidden ${isExpanded ? 'w-full' : ''}`}>
                                     <h4 className={`text-white font-medium truncate ${isExpanded ? 'text-base mb-1' : ''}`}>Liked Songs</h4>
-                                    <p className="text-sm truncate text-[#9ca3af]">📌 Playlist • 27 songs</p>
+                                    <p className="text-sm truncate font-medium text-[#9ca3af]">📌 Playlist • 27 songs</p>
                                 </div>
                             )}
                         </div>

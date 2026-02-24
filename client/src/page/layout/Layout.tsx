@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CURRENT_SONG, MOCK_ARTISTS, NEXT_SONG } from "../../util/Artist";
 import { Outlet } from "react-router-dom";
 import FollowingArtistSidebar from "../../component/sidebar/FollowingArtistSidebar";
@@ -6,22 +6,146 @@ import Header from "../../component/header/Header";
 import PlayerFooter from "../../component/footer/PlayerFooter";
 import NowPlayingRail from "../../component/sidebar/NowPlayingRail";
 import NowPlayingPanel from "../../component/sidebar/NowPlayingPanel";
+import { DEFAULT_LEFT_WIDTH, DEFAULT_RIGHT_WIDTH, MEDIUM_SCREEN, MIN_LEFT_WIDTH, MIN_RIGHT_WIDTH, SMALL_SCREEN } from "../../util/Size";
 
 export default function Layout() {
-    const [isNowPlayingCollapsed, setIsNowPlayingCollapsed] = useState(true);
+    const [screenWidth, setScreenWidth] = useState(() => window.innerWidth)
+    //Left sidebar
     const [isFollowingArtistSidebarExpanded, setIsFollowingArtistSidebarExpanded] = useState(false);
+    const [isLeftDragging, setIsLeftDragging] = useState(false);
+    const [leftWidth, setLeftWidth] = useState(() =>
+        window.innerWidth < SMALL_SCREEN ? MIN_LEFT_WIDTH : DEFAULT_LEFT_WIDTH
+    );
+
+    const [isLeftCollapsed, setIsLeftCollapsed] = useState(() =>
+        window.innerWidth < SMALL_SCREEN
+    );
+
+    //Right sidebar
+    const [rightWidth, setRightWidth] = useState(() =>
+        window.innerWidth < MEDIUM_SCREEN ? MIN_RIGHT_WIDTH : DEFAULT_RIGHT_WIDTH
+    );
+
+    const [isNowPlayingCollapsed, setIsNowPlayingCollapsed] = useState(() =>
+        window.innerWidth >= MEDIUM_SCREEN
+    );
+    const [isRightDragging, setIsRightDragging] = useState(false);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setScreenWidth(window.innerWidth);
+        };
+
+        window.addEventListener("resize", handleResize);
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
+
+    useEffect(() => {
+        const handleScreenWidth = () => {
+            if (screenWidth < SMALL_SCREEN) {
+                setLeftWidth(MIN_LEFT_WIDTH);
+                setIsLeftCollapsed(true);
+                setIsFollowingArtistSidebarExpanded(false);
+            } else {
+                setLeftWidth(DEFAULT_LEFT_WIDTH);
+                setIsLeftCollapsed(false);
+            }
+
+            // RIGHT SIDEBAR
+            if (screenWidth < MEDIUM_SCREEN) {
+                setRightWidth(MIN_RIGHT_WIDTH);
+                setIsNowPlayingCollapsed(false);
+            } else {
+                setRightWidth(DEFAULT_RIGHT_WIDTH);
+                setIsNowPlayingCollapsed(true);
+            }
+        }
+
+        handleScreenWidth()
+    }, [screenWidth]);
+
+    useEffect(() => {
+        const handleMouseMove = (e: MouseEvent) => {
+            if (isLeftDragging) {
+                const newWidth = e.clientX;
+
+                if (newWidth < 160) {
+                    setIsLeftCollapsed(true);
+                    setIsFollowingArtistSidebarExpanded(false);
+                    setLeftWidth(MIN_LEFT_WIDTH);
+                } else if (newWidth > 400) {
+                    setIsLeftCollapsed(false);
+                    setIsFollowingArtistSidebarExpanded(true);
+                    setLeftWidth(newWidth);
+                } else {
+                    setIsLeftCollapsed(false);
+                    setIsFollowingArtistSidebarExpanded(false);
+                    setLeftWidth(newWidth);
+                }
+            }
+
+            if (isRightDragging) {
+                const newWidth = window.innerWidth - e.clientX;
+
+                if (newWidth < 200) {
+                    setIsNowPlayingCollapsed(false);
+                    setRightWidth(60);
+                } else {
+                    setIsNowPlayingCollapsed(true);
+                    setRightWidth(newWidth > 400 ? 400 : newWidth);
+                }
+            }
+        };
+
+        const handleMouseUp = () => {
+            setIsLeftDragging(false);
+            setIsRightDragging(false);
+            document.body.style.cursor = 'default';
+        };
+
+        if (isLeftDragging || isRightDragging) {
+            document.addEventListener("mousemove", handleMouseMove);
+            document.addEventListener("mouseup", handleMouseUp);
+            document.body.style.userSelect = 'none';
+        }
+
+        return () => {
+            document.removeEventListener("mousemove", handleMouseMove);
+            document.removeEventListener("mouseup", handleMouseUp);
+            document.body.style.userSelect = 'auto';
+        };
+    }, [isLeftDragging, isRightDragging]);
 
     return (
         <div className="flex flex-col h-screen w-full overflow-hidden bg-black text-white">
             <Header />
 
-            <div className="flex flex-1 min-h-0 overflow-hidden relative md:gap-x-2">
-                <div className="shrink-0 rounded-t-lg overflow-hidden bg-[#121212]">
+            <div className="flex flex-1 min-h-0 overflow-hidden relative md:gap-x-1">
+                <div
+                    className="shrink-0 rounded-t-lg overflow-hidden bg-[#121212] transition-none"
+                    style={{ width: isFollowingArtistSidebarExpanded ? '97%' : leftWidth }}
+                >
                     <FollowingArtistSidebar
                         isExpanded={isFollowingArtistSidebarExpanded}
                         setIsExpanded={setIsFollowingArtistSidebarExpanded}
+                        isCollapsed={isLeftCollapsed}
+                        setIsCollapsed={setIsLeftCollapsed}
+                        setLeftWidth={setLeftWidth}
                     />
                 </div>
+
+                {!isFollowingArtistSidebarExpanded && (
+                    <div
+                        className="w-1 cursor-col-resize hover:bg-white/50 hover:w-1.5 transition-all z-10 hidden md:block"
+                        onMouseDown={() => {
+                            setIsLeftDragging(true);
+                            document.body.style.cursor = 'col-resize';
+                        }}
+                    />
+                )}
 
                 <main
                     className={` 
@@ -37,12 +161,25 @@ export default function Layout() {
                     </div>
                 </main>
 
+                {!isFollowingArtistSidebarExpanded && isNowPlayingCollapsed && (
+                    <div
+                        className="w-1 cursor-col-resize hover:bg-white/50 hover:w-1.5 transition-all z-10 hidden md:block"
+                        onMouseDown={() => {
+                            setIsRightDragging(true);
+                            document.body.style.cursor = 'col-resize';
+                        }}
+                    />
+                )}
+
                 <aside
                     className={`
-                        h-full border-l border-white/10 transition-all duration-300 ease-in-out flex-shrink-0 hidden md:flex
-                        ${isNowPlayingCollapsed ? 'w-[300px] xl:w-[350px] 2xl:w-[400px]' : 'w-[60px]'}
+                        h-full ease-in-out flex-shrink-0 hidden md:flex
                         ${isFollowingArtistSidebarExpanded ? 'hidden md:flex' : 'flex'}
                     `}
+                    style={{
+                        width: isNowPlayingCollapsed ? rightWidth : "2%",
+                        transition: isRightDragging ? 'none' : 'width 0.3s'
+                    }}
                 >
                     {isNowPlayingCollapsed ? (
                         <NowPlayingPanel

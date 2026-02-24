@@ -13,6 +13,16 @@ export interface Song {
     createdAt: string;
 }
 
+export interface SongBasic {
+    id: string;
+    title: string;
+    artists: ArtistBasic[];
+    albumCover: string;
+    durationSeconds: number;
+    isExplicit: boolean;
+    isLiked: boolean;
+}
+
 export interface NextSong {
     id: string;
     title: string;

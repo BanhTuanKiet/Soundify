@@ -112,7 +112,7 @@ export default function FollowingArtistCard({ artist, activeArtist, setActiveArt
                         `}>
                             {artist.name}
                         </h4>
-                        <p className={`text-[#9ca3af] truncate ${isExpanded ? 'text-sm' : 'text-sm'}`}>Artist</p>
+                        <p className={`text-[#9ca3af] truncate text-sm font-medium`}>Artist</p>
                     </div>
 
                     {!isExpanded && (
