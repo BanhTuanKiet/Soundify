@@ -1,8 +1,10 @@
-import { useMemo } from 'react';
+import { useContext, useMemo } from 'react';
 import { MusicSection, type DisplayCardItem } from "../../component/card/MusicDiscoveryCard";
 import Footer from "../../component/footer/Footer";
 import { RONALDO_MEME } from '../../util/RONALDO_MEME';
 import SearchResults from '../../component/SearchResult';
+import { SearchContext } from '../../context/SearchContext'
+import SearchLoading from '../../component/SearchLoading';
 
 const MOCK_ARTISTS = [
     { Id: 'a1', Name: 'Low G', AvatarUrl: RONALDO_MEME.ronaldo_1 },
@@ -30,6 +32,7 @@ const MOCK_SONGS = [
 ];
 
 export default function Home() {
+    const { keyword, isSearching } = useContext(SearchContext);
     const getArtistById = (id: string) => MOCK_ARTISTS.find(a => a.Id === id);
     const getAlbumById = (id: string) => MOCK_ALBUMS.find(a => a.Id === id);
 
@@ -63,24 +66,30 @@ export default function Home() {
         <div className="flex h-full w-full bg-[#121212] text-white overflow-hidden">
             <main className="flex-1 w-full overflow-y-auto overflow-x-hidden scrollbar-hover">
                 <div className="max-w-[1400px] mx-auto py-6">
-                    <SearchResults />
+                    {keyword && keyword !== "" ? (
+                        isSearching
+                            ? <SearchLoading />
+                            : <SearchResults />
+                    ) : (
+                        <>
+                            <MusicSection
+                                title="Suggested Artists"
+                                items={artistData}
+                            />
 
-                    <MusicSection
-                        title="Suggested Artists"
-                        items={artistData}
-                    />
+                            <MusicSection
+                                title="Low G"
+                                subTitle="More Like"
+                                items={artistData.slice(1, 4)}
+                            />
 
-                    <MusicSection
-                        title="Low G"
-                        subTitle="More Like"
-                        items={artistData.slice(1, 4)}
-                    />
-
-                    <MusicSection
-                        title="Trending Now"
-                        subTitle="Viral Hits"
-                        items={trendingData}
-                    />
+                            <MusicSection
+                                title="Trending Now"
+                                subTitle="Viral Hits"
+                                items={trendingData}
+                            />
+                        </>
+                    )}
 
                     <Footer />
                 </div>

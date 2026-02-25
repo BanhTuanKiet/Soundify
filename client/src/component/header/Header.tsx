@@ -1,8 +1,11 @@
 import { Bell, Home, Search, Download, Menu } from "lucide-react";
 import spotifyIcon from "../../asset/image/Spotify_logo_without_text.svg.png";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { SearchContext } from "../../context/SearchContext";
 
 export default function Header() {
+    const { setKeyword } = useContext(SearchContext);
     const navigate = useNavigate()
 
     return (
@@ -32,6 +35,7 @@ export default function Header() {
                         type="text"
                         placeholder="What do you want to play?"
                         className="bg-transparent outline-none text-white placeholder-gray-400 text-sm w-full hidden sm:block"
+                        onChange={(e) => setKeyword(e.target.value)}
                     />
                 </div>
             </div>

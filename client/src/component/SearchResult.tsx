@@ -1,14 +1,10 @@
 import { useState } from 'react';
 import { TopResultCard } from './card/TopResultCard';
-import { artistsData, TOP_ARTIST } from '../util/Artist';
+import { TOP_ARTIST } from '../util/Artist';
 import { FilterBar } from './sidebar/FilterTab';
 import type { SongBasic } from '../model/Song';
 import { SongSection } from './card/SongCard';
-import { MusicSection } from './card/MusicDiscoveryCard';
-
-interface SearchResultsProps {
-    query?: string;
-}
+// import { MusicSection } from './card/MusicDiscoveryCard';
 
 const SONGS: SongBasic[] = [
     {
@@ -63,7 +59,7 @@ const SONGS: SongBasic[] = [
 
 const FILTER_TABS = ['All', 'Artists', 'Songs', 'Playlists', 'Albums', 'Podcasts & Shows', 'Profiles', 'Genres & Moods', 'Audiobooks'];
 
-export default function SearchResults({ query = 'Sơn Tùng M-TP' }: SearchResultsProps) {
+export default function SearchResults() {
     const [activeTab, setActiveTab] = useState('All');
 
     return (
@@ -87,10 +83,10 @@ export default function SearchResults({ query = 'Sơn Tùng M-TP' }: SearchResul
                     </div>
                 </div>
 
-                <MusicSection
+                {/* <MusicSection
                     title="Suggested Artists"
                     items={artistsData}
-                />
+                /> */}
             </div>
         </div>
     );
