@@ -5,8 +5,8 @@ const currentSong: NextSong = {
     id: "s1",
     title: "Có Em",
     artists: [
-        { id: "a1", name: "Madihu", avatarUrl: "" },
-        { id: "a2", name: "Low G", avatarUrl: "" }
+        { id: "a1", name: "Madihu", avatarUrl: "", type: "Artist" },
+        { id: "a2", name: "Low G", avatarUrl: "", type: "Artist" }
     ],
     coverUrl: "https://i.scdn.co/image/ab67616d0000b2734a706599b5032904033b006c",
     isExplicit: true

@@ -6,7 +6,7 @@ import Header from "../../component/header/Header";
 import PlayerFooter from "../../component/footer/PlayerFooter";
 import NowPlayingRail from "../../component/sidebar/NowPlayingRail";
 import NowPlayingPanel from "../../component/sidebar/NowPlayingPanel";
-import { DEFAULT_LEFT_WIDTH, DEFAULT_RIGHT_WIDTH, MEDIUM_SCREEN, MIN_LEFT_WIDTH, MIN_RIGHT_WIDTH, SMALL_SCREEN } from "../../util/Size";
+import { DEFAULT_LEFT_WIDTH, DEFAULT_RIGHT_WIDTH, MAX_LEFT_WIDTH, MAX_RIGHT_WIDTH, MEDIUM_SCREEN, MIN_LEFT_WIDTH, MIN_RIGHT_WIDTH, SMALL_SCREEN } from "../../util/Size";
 
 export default function Layout() {
     const [screenWidth, setScreenWidth] = useState(() => window.innerWidth)
@@ -72,11 +72,11 @@ export default function Layout() {
             if (isLeftDragging) {
                 const newWidth = e.clientX;
 
-                if (newWidth < 160) {
+                if (newWidth < MIN_LEFT_WIDTH * 3) {
                     setIsLeftCollapsed(true);
                     setIsFollowingArtistSidebarExpanded(false);
                     setLeftWidth(MIN_LEFT_WIDTH);
-                } else if (newWidth > 400) {
+                } else if (newWidth > MAX_LEFT_WIDTH) {
                     setIsLeftCollapsed(false);
                     setIsFollowingArtistSidebarExpanded(true);
                     setLeftWidth(newWidth);
@@ -90,12 +90,11 @@ export default function Layout() {
             if (isRightDragging) {
                 const newWidth = window.innerWidth - e.clientX;
 
-                if (newWidth < 200) {
+                if (newWidth < MIN_RIGHT_WIDTH) {
                     setIsNowPlayingCollapsed(false);
-                    setRightWidth(60);
                 } else {
                     setIsNowPlayingCollapsed(true);
-                    setRightWidth(newWidth > 400 ? 400 : newWidth);
+                    setRightWidth(newWidth > MAX_RIGHT_WIDTH ? MAX_RIGHT_WIDTH : newWidth);
                 }
             }
         };

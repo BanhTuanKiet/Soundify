@@ -1,4 +1,4 @@
-import { Bell, Home, Search, Download, Menu } from "lucide-react";
+import { Bell, Home, Search, Download } from "lucide-react";
 import spotifyIcon from "../../asset/image/Spotify_logo_without_text.svg.png";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
@@ -11,9 +11,6 @@ export default function Header() {
     return (
         <header className="sticky top-0 z-50 h-16 bg-black px-2 md:px-4 flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 md:gap-4">
-                <button className="md:hidden p-2 text-white hover:bg-[#1f1f1f] rounded-full">
-                    <Menu size={24} />
-                </button>
                 <img
                     src={spotifyIcon}
                     alt="Spotify"
