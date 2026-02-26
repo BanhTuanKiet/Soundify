@@ -1,0 +1,10 @@
+using Microsoft.AspNetCore.Identity;
+
+namespace server.Models
+{
+    public class ApplicationUser : IdentityUser<Guid>
+    {
+        public string? RefreshToken { get; set; }
+        public bool IsActive { get; set; } = true;
+    }
+}
