@@ -7,14 +7,14 @@ import {
 } from "react";
 import type { ReactNode } from "react";
 
-type NotificationContextType = {
+type SearchContextType = {
     keyword: string,
     setKeyword: (keyword: string) => void,
     isSearching: boolean,
     setIsSearching: (isSearching: boolean) => void
 }
 
-const SearchContext = createContext<NotificationContextType>({
+const SearchContext = createContext<SearchContextType>({
     keyword: "",
     setKeyword: () => { },
     isSearching: false,

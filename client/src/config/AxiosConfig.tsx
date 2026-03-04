@@ -2,7 +2,7 @@ import axios from "axios"
 // import { SuccessNotify, WarningNotify, ErrorNotify } from "@/utils/toastUtils"
 
 const instance = axios.create({
-    baseURL: "http://localhost:5144",
+    baseURL: "http://localhost:5165",
     withCredentials: true,
 })
 

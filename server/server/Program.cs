@@ -9,7 +9,7 @@ builder.Services.AddAutoMapper(typeof(AutoMapperConfig).Assembly);
 builder.Services.AddDatabaseAndServices(builder.Configuration);
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddAuth(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace server.Models;
 
-public partial class AppDbContext : DbContext
+public partial class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
 {
     public AppDbContext()
     {
@@ -19,19 +21,21 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<AlbumArtist> AlbumArtists { get; set; }
 
+    // public virtual DbSet<ApplicationUser> ApplicationUser { get; set; }
+
     public virtual DbSet<Artist> Artists { get; set; }
 
-    public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
+    // public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
 
-    public virtual DbSet<AspNetRoleClaim> AspNetRoleClaims { get; set; }
+    // public virtual DbSet<AspNetRoleClaim> AspNetRoleClaims { get; set; }
 
-    public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
+    // public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
 
-    public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
+    // public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
 
-    public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
+    // public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
 
-    public virtual DbSet<AspNetUserToken> AspNetUserTokens { get; set; }
+    // public virtual DbSet<AspNetUserToken> AspNetUserTokens { get; set; }
 
     public virtual DbSet<Genre> Genres { get; set; }
 
@@ -47,6 +51,9 @@ public partial class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+        
+        modelBuilder.HasDefaultSchema("public");
         modelBuilder.HasPostgresExtension("uuid-ossp");
 
         modelBuilder.Entity<Album>(entity =>
@@ -77,68 +84,69 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Type).HasDefaultValueSql("'artist'::character varying");
         });
 
-        modelBuilder.Entity<AspNetRole>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("AspNetRoles_pkey");
+        // modelBuilder.Entity<AspNetRole>(entity =>
+        // {
+        //     entity.HasKey(e => e.Id).HasName("AspNetRoles_pkey");
 
-            entity.Property(e => e.Id).HasDefaultValueSql("uuid_generate_v4()");
-        });
+        //     entity.Property(e => e.Id).HasDefaultValueSql("uuid_generate_v4()");
+        // });
 
-        modelBuilder.Entity<AspNetRoleClaim>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("AspNetRoleClaims_pkey");
+        // modelBuilder.Entity<AspNetRoleClaim>(entity =>
+        // {
+        //     entity.HasKey(e => e.Id).HasName("AspNetRoleClaims_pkey");
 
-            entity.HasOne(d => d.Role).WithMany(p => p.AspNetRoleClaims).HasConstraintName("AspNetRoleClaims_RoleId_fkey");
-        });
+        //     entity.HasOne(d => d.Role).WithMany(p => p.AspNetRoleClaims).HasConstraintName("AspNetRoleClaims_RoleId_fkey");
+        // });
 
-        modelBuilder.Entity<AspNetUser>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("AspNetUsers_pkey");
+        // modelBuilder.Entity<AspNetUser>(entity =>
+        // {
+        //     entity.HasKey(e => e.Id).HasName("AspNetUsers_pkey");
 
-            entity.Property(e => e.Id).HasDefaultValueSql("uuid_generate_v4()");
-            entity.Property(e => e.AccessFailedCount).HasDefaultValue(0);
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
-            entity.Property(e => e.EmailConfirmed).HasDefaultValue(false);
-            entity.Property(e => e.LockoutEnabled).HasDefaultValue(false);
-            entity.Property(e => e.PhoneNumberConfirmed).HasDefaultValue(false);
-            entity.Property(e => e.TwoFactorEnabled).HasDefaultValue(false);
+        //     entity.Property(e => e.Id).HasDefaultValueSql("uuid_generate_v4()");
+        //     entity.Property(e => e.AccessFailedCount).HasDefaultValue(0);
+        //     entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+        //     entity.Property(e => e.EmailConfirmed).HasDefaultValue(false);
+        //     entity.Property(e => e.LockoutEnabled).HasDefaultValue(false);
+        //     entity.Property(e => e.PhoneNumberConfirmed).HasDefaultValue(false);
+        //     entity.Property(e => e.TwoFactorEnabled).HasDefaultValue(false);
 
-            entity.HasMany(d => d.Roles).WithMany(p => p.Users)
-                .UsingEntity<Dictionary<string, object>>(
-                    "AspNetUserRole",
-                    r => r.HasOne<AspNetRole>().WithMany()
-                        .HasForeignKey("RoleId")
-                        .HasConstraintName("AspNetUserRoles_RoleId_fkey"),
-                    l => l.HasOne<AspNetUser>().WithMany()
-                        .HasForeignKey("UserId")
-                        .HasConstraintName("AspNetUserRoles_UserId_fkey"),
-                    j =>
-                    {
-                        j.HasKey("UserId", "RoleId").HasName("AspNetUserRoles_pkey");
-                        j.ToTable("AspNetUserRoles");
-                    });
-        });
+        //     entity.HasMany(d => d.Roles).WithMany(p => p.Users)
+        //         .UsingEntity<Dictionary<string, object>>(
+        //             "AspNetUserRole",
+        //             r => r.HasOne<AspNetRole>().WithMany()
+        //                 .HasForeignKey("RoleId")
+        //                 .HasConstraintName("AspNetUserRoles_RoleId_fkey"),
+        //             l => l.HasOne<AspNetUser>().WithMany()
+        //                 .HasForeignKey("UserId")
+        //                 .HasConstraintName("AspNetUserRoles_UserId_fkey"),
+        //             j =>
+        //             {
+        //                 j.HasKey("UserId", "RoleId").HasName("AspNetUserRoles_pkey");
+        //                 j.ToTable("AspNetUserRoles");
+        //             });
+        // });
 
-        modelBuilder.Entity<AspNetUserClaim>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("AspNetUserClaims_pkey");
+        // modelBuilder.Entity<AspNetUserClaim>(entity =>
+        // {
+        //     entity.HasKey(e => e.Id).HasName("AspNetUserClaims_pkey");
 
-            entity.HasOne(d => d.User).WithMany(p => p.AspNetUserClaims).HasConstraintName("AspNetUserClaims_UserId_fkey");
-        });
+        //     entity.HasOne(d => d.User).WithMany(p => p.AspNetUserClaims).HasConstraintName("AspNetUserClaims_UserId_fkey");
+        // });
 
-        modelBuilder.Entity<AspNetUserLogin>(entity =>
-        {
-            entity.HasKey(e => new { e.LoginProvider, e.ProviderKey }).HasName("AspNetUserLogins_pkey");
+        // modelBuilder.Entity<AspNetUserLogin>(entity =>
+        // {
+        //     entity.HasKey(e => new { e.LoginProvider, e.ProviderKey }).HasName("AspNetUserLogins_pkey");
 
-            entity.HasOne(d => d.User).WithMany(p => p.AspNetUserLogins).HasConstraintName("AspNetUserLogins_UserId_fkey");
-        });
+        //     entity.HasOne(d => d.User).WithMany(p => p.AspNetUserLogins).HasConstraintName("AspNetUserLogins_UserId_fkey");
+        // });
 
-        modelBuilder.Entity<AspNetUserToken>(entity =>
-        {
-            entity.HasKey(e => new { e.UserId, e.LoginProvider, e.Name }).HasName("AspNetUserTokens_pkey");
+        // modelBuilder.Entity<AspNetUserToken>(entity =>
+        // {
+        //     entity.HasKey(e => new { e.UserId, e.LoginProvider, e.Name }).HasName("AspNetUserTokens_pkey");
 
-            entity.HasOne(d => d.User).WithMany(p => p.AspNetUserTokens).HasConstraintName("AspNetUserTokens_UserId_fkey");
-        });
+        //     entity.HasOne(d => d.User).WithMany(p => p.AspNetUserTokens).HasConstraintName("AspNetUserTokens_UserId_fkey");
+        // });
+
 
         modelBuilder.Entity<Genre>(entity =>
         {

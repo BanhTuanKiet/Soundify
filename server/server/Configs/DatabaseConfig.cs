@@ -32,6 +32,7 @@ namespace server.Configs
             services.AddScoped<IArtist, ArtistService>();
             services.AddScoped<IPlaylist, PlaylistService>();
             services.AddScoped<ISong, SongService>();
+            services.AddScoped<IUser, UserService>();
         }
     }
 }

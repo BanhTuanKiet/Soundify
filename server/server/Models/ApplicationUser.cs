@@ -6,5 +6,6 @@ namespace server.Models
     {
         public string? RefreshToken { get; set; }
         public bool IsActive { get; set; } = true;
+        public string AvatarUrl { get; set; } = string.Empty;
     }
 }
