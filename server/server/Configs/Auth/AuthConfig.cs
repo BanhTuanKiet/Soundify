@@ -1,12 +1,4 @@
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using server.Models;
-using server.Services.Album;
-using server.Services.Artist;
-using server.Services.Playlist;
-using server.Services.Song;
 
 namespace server.Configs
 {
@@ -21,7 +13,11 @@ namespace server.Configs
                 {
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultAuthenticateScheme = "Cookies";
+                    options.DefaultSignInScheme = "Cookies";
+                    options.DefaultChallengeScheme = "Google";
                 })
+                .AddCookie("Cookies")
                 .AddJWTConfig(configuration)
                 .AddGoogleAuth(configuration);
 

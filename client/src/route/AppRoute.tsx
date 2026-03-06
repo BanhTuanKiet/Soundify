@@ -3,7 +3,8 @@ import ArtistSongs from "../page/Song/ArtistSongs"
 import Layout from "../page/layout/Layout"
 import Home from "../page/home/Home"
 import Playlist from "../page/playlist/Playlist"
-import { RegisterForm, Signin } from "../page/auth/Auth"
+import { Signup } from "../page/auth/Signup"
+import { Signin } from "../page/auth/Signin"
 
 function AppRoute() {
     return (
@@ -14,7 +15,7 @@ function AppRoute() {
                 <Route path="/playlist" element={<Playlist />} />
             </Route>
             <Route path="/signin" element={<Signin />} /> 
-            <Route path="/register" element={<RegisterForm />} /> 
+            <Route path="/signup" element={<Signup />} /> 
         </Routes>
     )
 }

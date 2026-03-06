@@ -35,11 +35,12 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
 
         isSubmittingRef.current = true;
         setIsLoading(true);
-console.log("AAAAAAA")
+    
         try {
             const apiUrl = "http://localhost:5165/user/signin-google";
             // const response = await axios.get(`/users/signin-google`)
             // console.log(response.data)
+            console.log(apiUrl)
             window.location.href = apiUrl
         } finally {
             isSubmittingRef.current = false;

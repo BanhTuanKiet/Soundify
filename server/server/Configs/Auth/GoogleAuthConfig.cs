@@ -1,8 +1,8 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using server.Models;
 using server.Services.Song;
 using server.Shared;
@@ -12,7 +12,10 @@ namespace server.Configs
 {
     public static class GoogleAuthConfig
     {
-        public static AuthenticationBuilder AddGoogleAuth(this AuthenticationBuilder builder, IConfiguration configuration)
+        public static AuthenticationBuilder AddGoogleAuth(
+            this AuthenticationBuilder builder,
+            IConfiguration configuration
+        )
         {
             builder.AddGoogle(options =>
             {
@@ -22,55 +25,61 @@ namespace server.Configs
                 string clientSecret = configuration["Authentication:Google:ClientSecret"]
                     ?? throw new ErrorException("ClientSecret is null");
 
-                string returnUrl = configuration["Google:ReturnUrl"]
+                string returnUrl = configuration["Authentication:Google:ReturnUrl"]
                     ?? throw new ErrorException("ReturnUrl is null");
 
                 options.ClientId = clientId;
                 options.ClientSecret = clientSecret;
-                options.CallbackPath = configuration["Authentication:Google:Callback"];
+
+                options.CallbackPath =
+                    configuration["Authentication:Google:Callback"]
+                    ?? "/signin-google";
+
                 options.SaveTokens = true;
-                options.AccessType = "offline";
                 options.Scope.Add("email");
                 options.Scope.Add("profile");
+                options.CorrelationCookie.SameSite = SameSiteMode.Lax;
+                options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
 
-                options.Events.OnTicketReceived = async context =>
+                options.Events = new OAuthEvents
                 {
-                    HttpContext httpContext = context?.HttpContext
-                        ?? throw new ErrorException("HttpContext is null");
+                    OnTicketReceived = async context =>
+                    {
+                        HttpContext httpContext = context.HttpContext;
+                        HttpResponse response = context.Response;
 
-                    HttpResponse httpResponse = context?.Response
-                        ?? throw new ErrorException("HttpResponse is null");
+                        string email = context.Principal?.FindFirstValue(ClaimTypes.Email)
+                            ?? throw new ErrorException(400, "Email not found");
 
-                    string email = context?.Principal?.FindFirstValue(ClaimTypes.Email)
-                        ?? throw new ErrorException(400, "Email is required");
+                        string name = context.Principal?.FindFirstValue(ClaimTypes.Name)
+                            ?? "Google User";
 
-                    string name = context?.Principal?.FindFirstValue(ClaimTypes.Name)
-                        ?? throw new ErrorException(400, "Name is required");
+                        var userManager = httpContext.RequestServices
+                            .GetRequiredService<UserManager<ApplicationUser>>();
 
-                    IUser? userService = httpContext.RequestServices.GetRequiredService<IUser>();
-                    UserManager<ApplicationUser>? userManager = httpContext.RequestServices.GetRequiredService<UserManager<ApplicationUser>>();
-                    AppDbContext? db = httpContext.RequestServices.GetRequiredService<AppDbContext>();
+                        var user = await userManager.FindByEmailAsync(email);
+                        var encodedEmail = Uri.EscapeDataString(email);
+                        var encodedName = Uri.EscapeDataString(name);
 
-                    var (user, isNewUser) = await userService.FindOrCreateUserByEmail(email, name);
-                    var roles = await userManager.GetRolesAsync(user);
+                        if (user != null)
+                        {
+                            response.Redirect($"{returnUrl}/signup?email={encodedEmail}&name={encodedName}&status=email_exists");
+                            context.HandleResponse();
+                            return;
+                        }
 
-                    var accessToken = JwtUtils.GenerateToken(user, roles, 1, configuration);
-                    var refreshToken = JwtUtils.GenerateToken(user, roles, 24, configuration);
+                        response.Redirect($"{returnUrl}/signup?email={encodedEmail}&name={encodedName}&status=true");
+                        context.HandleResponse();
+                    },
 
-                    CookieUtils.SetCookie(httpResponse, "token", accessToken, 24);
+                    OnRemoteFailure = context =>
+                    {
+                        context.Response.Redirect($"{returnUrl}?status=google_error");
 
-                    await userService.SaveRefreshToken(user.Id, refreshToken);
-                    await db.SaveChangesAsync();
+                        context.HandleResponse();
 
-                    context?.Response.Redirect(returnUrl);
-                    context?.HandleResponse();
-                };
-
-                options.Events.OnRemoteFailure = context =>
-                {
-                    context.Response.Redirect($"{returnUrl}?false");
-                    context.HandleResponse();
-                    return System.Threading.Tasks.Task.CompletedTask;
+                        return Task.CompletedTask;
+                    }
                 };
             });
 
