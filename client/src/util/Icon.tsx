@@ -34,7 +34,7 @@ export const PhoneIcon = () => (
 export const GreenButton = ({
     children,
     onClick,
-    type = "button",
+    type = "button"
 }: {
     children: React.ReactNode;
     onClick?: () => void;

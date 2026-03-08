@@ -8,6 +8,8 @@ export interface UserLogin {
     email: string
     name: string
     dateOfBirth: DateOfBirth
-    sex: "male" | "female"
+    sex: boolean
+    marketingOptOut: boolean
+    shareData: boolean
 }
 

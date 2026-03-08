@@ -1,3 +1,4 @@
+using server.DTO;
 using server.Models;
 
 namespace server.Services.Song
@@ -6,5 +7,6 @@ namespace server.Services.Song
     {
         Task<(ApplicationUser user, bool isNewUser)> FindOrCreateUserByEmail(string email, string name);
         Task<bool> SaveRefreshToken(Guid userId, string token);
+        Task<ApplicationUser> CreateUser(UserDTO.UserLogin userLogin, DateOnly dob);
     }
 }

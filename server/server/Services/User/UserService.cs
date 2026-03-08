@@ -5,6 +5,8 @@ using server.Services.Song;
 using server.Shared;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Identity;
+using server.DTO;
+using Npgsql.Internal;
 
 namespace server.Services.Album
 {
@@ -70,13 +72,14 @@ namespace server.Services.Album
                 throw new ErrorException(400, "Failed to add role: " + messages);
             }
 
+            await _context.SaveChangesAsync();
             return (user, true);
         }
 
         public async Task<bool> SaveRefreshToken(Guid userId, string token)
         {
             ApplicationUser? user = await _context.Users.FindAsync(userId);
-            
+
             if (user == null)
                 return false;
 
@@ -86,6 +89,35 @@ namespace server.Services.Album
             await _context.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<ApplicationUser> CreateUser(UserDTO.UserLogin userLogin, DateOnly dob)
+        {
+            ApplicationUser? existedUser = await _userManager.FindByEmailAsync(userLogin.Email);
+
+            if (existedUser != null)
+            {
+                throw new ErrorException(StatusCodes.Status409Conflict, "User with this email already exists");
+            }
+
+            if (!userLogin.MarketingOptOut || !userLogin.ShareData)
+            {
+                throw new ErrorException(StatusCodes.Status400BadRequest, "You must accept the required policies to continue");
+            }
+
+            ApplicationUser user = new ApplicationUser
+            {
+                Email = userLogin.Email,
+                UserName = userLogin.Email,
+                DisplayName = userLogin.Name,
+                DateOfBirth = dob,
+                Sex = userLogin.Sex,
+            };
+
+            await _userManager.CreateAsync(user);
+            await _context.SaveChangesAsync();
+            
+            return user;
         }
     }
 }

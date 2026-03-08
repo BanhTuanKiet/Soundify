@@ -3,6 +3,9 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { SpotifyLogo, GreenButton } from "../../util/Icon";
 import type { UserLogin, DateOfBirth } from "../../model/User";
 import { CircleAlert } from "lucide-react";
+import { MONTHS } from "../../util/Time";
+import { SignupStep2 } from "./SignupStep2";
+import ExistEmail from "../../component/card/ExistEmail";
 
 interface SignupStep1Props {
     status: string | null;
@@ -10,6 +13,7 @@ interface SignupStep1Props {
 
 export const SignupStep1 = ({ status }: SignupStep1Props) => {
     const isLocked = status === "email_exists";
+    const [isShowStep2, setIsShowStep2] = useState(false)
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 
@@ -20,7 +24,7 @@ export const SignupStep1 = ({ status }: SignupStep1Props) => {
         email: isLocked ? "" : emailFromUrl,
         name: isLocked ? "" : nameFromUrl,
         dateOfBirth: { day: "", month: "", year: "" },
-        sex: "male"
+        sex: true
     });
 
     const [errors, setErrors] = useState({
@@ -44,6 +48,7 @@ export const SignupStep1 = ({ status }: SignupStep1Props) => {
 
     const handleDobChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
+
         setFormData(prev => ({
             ...prev,
             dateOfBirth: {
@@ -99,10 +104,15 @@ export const SignupStep1 = ({ status }: SignupStep1Props) => {
         setErrors(newErrors);
 
         if (isValid) {
-            console.log("Form data hợp lệ, chuyển tiếp:", formData);
-            // navigate("/signup/step2", { state: { formData } }); 
+            setIsShowStep2(true)
         }
     };
+
+    if (isShowStep2) {
+        return (
+            <SignupStep2 onHideStep2={setIsShowStep2} formData={formData as UserLogin} setFormData={setFormData} />
+        )
+    }
 
     return (
         <div className="min-h-screen bg-[#121212] flex flex-col items-center pt-8 px-4">
@@ -116,7 +126,7 @@ export const SignupStep1 = ({ status }: SignupStep1Props) => {
                 </div>
 
                 <div className="flex items-start gap-4 mb-6">
-                    <button onClick={() => navigate("/signup")} className="mt-1 text-[#a7a7a7] hover:text-white">
+                    <button onClick={() => navigate(-1)} className="mt-1 text-[#a7a7a7] hover:text-white">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6" /></svg>
                     </button>
                     <div>
@@ -125,19 +135,7 @@ export const SignupStep1 = ({ status }: SignupStep1Props) => {
                     </div>
                 </div>
 
-                {isLocked && (
-                    <div className="bg-[#e91429] p-3 rounded flex items-center gap-3 mb-6">
-                        <div className="shrink-0 text-white">
-                            <CircleAlert size={22} />
-                        </div>
-                        <p className="text-white text-sm font-semibold">
-                            This email address is already linked to an account.{" "}
-                            <button onClick={() => navigate("/signin")} className="underline hover:text-gray-200">
-                                Log in
-                            </button>.
-                        </p>
-                    </div>
-                )}
+                {isLocked && <ExistEmail />}
 
                 <form noValidate className="flex flex-col gap-5" onSubmit={nextStep}>
                     <div className="flex flex-col gap-2">
@@ -146,8 +144,7 @@ export const SignupStep1 = ({ status }: SignupStep1Props) => {
                             name="email"
                             type="email"
                             placeholder="name@domain.com"
-                            className={`w-full px-3 py-2.5 rounded bg-[#121212] border text-white placeholder-[#727272] outline-none transition-all ${errors.email ? "border-[#e91429] focus:border-[#e91429]" : "border-[#727272] focus:border-[#1ed760]"
-                                }`}
+                            className={`w-full px-3 py-2.5 rounded bg-[#121212] border text-white placeholder-[#727272] outline-none transition-all ${errors.email ? "border-[#e91429] focus:border-[#e91429]" : "border-[#727272] focus:border-[#1ed760]"}`}
                             value={formData.email}
                             onChange={handleChange}
                             disabled={isLocked}
@@ -165,8 +162,7 @@ export const SignupStep1 = ({ status }: SignupStep1Props) => {
                         <input
                             name="name"
                             type="text"
-                            className={`w-full px-3 py-2.5 rounded bg-[#121212] border text-white outline-none transition-all mt-1 ${errors.name ? "border-[#e91429] focus:border-[#e91429]" : "border-[#727272] focus:border-[#1ed760]"
-                                }`}
+                            className={`w-full px-3 py-2.5 rounded bg-[#121212] border text-white outline-none transition-all mt-1 ${errors.name ? "border-[#e91429] focus:border-[#e91429]" : "border-[#727272] focus:border-[#1ed760]"}`}
                             value={formData.name}
                             onChange={handleChange}
                             disabled={isLocked}
@@ -187,30 +183,29 @@ export const SignupStep1 = ({ status }: SignupStep1Props) => {
                                 placeholder="dd"
                                 value={formData.dateOfBirth?.day}
                                 onChange={handleDobChange}
-                                className={`w-1/4 px-3 py-2.5 rounded bg-[#121212] border text-white text-center outline-none ${errors.dateOfBirth ? "border-[#e91429] focus:border-[#e91429]" : "border-[#727272] focus:border-[#1ed760]"
-                                    }`}
+                                className={`w-1/4 px-3 py-2.5 rounded bg-[#121212] border text-white text-center outline-none ${errors.dateOfBirth ? "border-[#e91429] focus:border-[#e91429]" : "border-[#727272] focus:border-[#1ed760]"}`}
                                 disabled={isLocked}
                             />
                             <select
                                 name="month"
                                 value={formData.dateOfBirth?.month}
                                 onChange={handleDobChange}
-                                className={`w-2/4 px-3 py-2.5 rounded bg-[#121212] border text-white outline-none appearance-none ${errors.dateOfBirth ? "border-[#e91429] focus:border-[#e91429]" : "border-[#727272] focus:border-[#1ed760]"
-                                    }`}
+                                className={`w-2/4 px-3 py-2.5 rounded bg-[#121212] border text-white outline-none appearance-none ${errors.dateOfBirth ? "border-[#e91429] focus:border-[#e91429]" : "border-[#727272] focus:border-[#1ed760]"}`}
                                 disabled={isLocked}
                             >
                                 <option value="" disabled>Month</option>
-                                <option value="1">January</option>
-                                <option value="2">February</option>
-                                {/* Thêm các tháng khác... */}
+                                {MONTHS.map((month, idx) => (
+                                    <option value={(idx + 1).toString().padStart(2, "0")}>
+                                        {month}
+                                    </option>
+                                ))}
                             </select>
                             <input
                                 name="year"
                                 placeholder="yyyy"
                                 value={formData.dateOfBirth?.year}
                                 onChange={handleDobChange}
-                                className={`w-1/4 px-3 py-2.5 rounded bg-[#121212] border text-white text-center outline-none ${errors.dateOfBirth ? "border-[#e91429] focus:border-[#e91429]" : "border-[#727272] focus:border-[#1ed760]"
-                                    }`}
+                                className={`w-1/4 px-3 py-2.5 rounded bg-[#121212] border text-white text-center outline-none ${errors.dateOfBirth ? "border-[#e91429] focus:border-[#e91429]" : "border-[#727272] focus:border-[#1ed760]"}`}
                                 disabled={isLocked}
                             />
                         </div>
@@ -225,18 +220,32 @@ export const SignupStep1 = ({ status }: SignupStep1Props) => {
                         <label className="text-white text-sm font-bold">Sex</label>
                         <p className="text-[#a7a7a7] text-[13px] leading-tight">Your gender helps us provide you with content recommendations and ads that are relevant to you.</p>
                         <div className="grid grid-cols-2 gap-y-3 gap-x-4 mt-1">
-                            {["male", "female"].map((val) => (
-                                <label key={val} className="flex items-center gap-2 text-white text-sm cursor-pointer capitalize">
+                            {[
+                                { label: "Male", value: true },
+                                { label: "Female", value: false }
+                            ].map((item) => (
+                                <label
+                                    key={item.label}
+                                    className="flex items-center gap-2 text-white text-sm cursor-pointer capitalize"
+                                >
                                     <input
                                         type="radio"
                                         name="sex"
-                                        value={val}
-                                        checked={formData.sex === val}
+                                        value={item.value.toString()}
+                                        checked={formData.sex === item.value}
                                         className="accent-[#1ed760] w-4 h-4"
-                                        onChange={handleChange}
+                                        onChange={(e) => {
+                                            setFormData(prev => ({
+                                                ...prev,
+                                                sex: e.target.value === "true"
+                                            }));
+                                            if (errors.sex) {
+                                                setErrors(prev => ({ ...prev, sex: "" }));
+                                            }
+                                        }}
                                         disabled={isLocked}
                                     />
-                                    {val === "male" ? "Male" : "Female"}
+                                    {item.label}
                                 </label>
                             ))}
                         </div>

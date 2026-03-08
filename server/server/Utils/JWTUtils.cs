@@ -16,11 +16,9 @@ namespace server.Util
             int timeExp,
             IConfiguration configuration)
         {
-            string jwtKey = configuration["JWT:KEY"]
-                ?? throw new ErrorException("JWT KEY is null");
+            string jwtKey = configuration["JWT:KEY"] ?? throw new ErrorException("JWT KEY is null");
 
-            JwtSecurityTokenHandler tokenHandler =
-                new JwtSecurityTokenHandler();
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
 
             List<Claim> claims = new List<Claim>
             {

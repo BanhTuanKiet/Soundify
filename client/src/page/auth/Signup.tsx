@@ -2,18 +2,23 @@ import { useContext, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { AppleIcon, Divider, GoogleIcon, GreenButton, SocialButton, SpotifyLogo } from "../../util/Icon";
 import { UserContext } from "../../context/UserContext";
-// import type { UserLogin } from "../../model/User";
-// import { CircleAlert } from "lucide-react";
-// import WarningNotice from "../../component/WarningNotice";
 import { SignupStep1 } from "./SignupStep1";
+import { CircleAlert } from "lucide-react";
+import EmailSignupStep1 from "./EmailSignupStep1";
 
 type signupStatus = "true" | "false" | "email_exists";
 
 export const Signup = () => {
-    const { googleSignup } = useContext(UserContext);
+    const {
+        googleSignup,
+        email,
+        emailError,
+        validEmail,
+        emailSignup
+    } = useContext(UserContext)
     const navigate = useNavigate();
-    const [email, setEmail] = useState("");
     const [searchParams] = useSearchParams();
+    const [emailStep, setEmailStep] = useState<1 | 2 | 3 | null>(null)
 
     const status = searchParams.get("status") as signupStatus | null;
 
@@ -21,6 +26,17 @@ export const Signup = () => {
         return <SignupStep1 status={status} />;
     }
 
+    const handleNext = async () => {
+        const success = await emailSignup()
+
+        if (success) {
+            setEmailStep(1)
+        }
+    }
+
+    if (emailStep === 1) {
+        return <EmailSignupStep1 />
+    }
     return (
         <div className="min-h-screen bg-[#121212] flex items-center justify-center px-4">
             <div className="w-full max-w-[450px] flex flex-col items-center gap-6 py-12">
@@ -38,9 +54,17 @@ export const Signup = () => {
                         type="email"
                         placeholder="name@domain.com"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full px-4 py-3 rounded-md bg-[#121212] border border-[#3e3e3e] text-white placeholder-[#6a6a6a] focus:outline-none focus:border-white transition-colors text-sm"
+                        onChange={(e) => validEmail(e.target.value)}
+                        className={`
+                            w-full px-4 py-3 rounded-md bg-[#121212] border text-white placeholder-[#6a6a6a] focus:outline-none transition-colors text-sm 
+                            ${emailError ? "border-[#e91429] focus:border-[#e91429]" : "border-[#727272] focus:border-[#1ed760]"}
+                        `}
                     />
+                    {emailError && (
+                        <div className="text-[#e91429] flex items-center gap-1.5 text-sm">
+                            <CircleAlert size={16} /> {emailError}
+                        </div>
+                    )}
                     <button
                         type="button"
                         className="text-[#1DB954] text-sm underline underline-offset-2 self-start hover:text-[#1ed760] transition-colors"
@@ -50,7 +74,7 @@ export const Signup = () => {
                 </div>
 
                 <div className="w-full">
-                    <GreenButton type="button" onClick={() => navigate("?status=false")}>
+                    <GreenButton type="button" onClick={handleNext}>
                         Next
                     </GreenButton>
                 </div>
